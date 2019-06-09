@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<title>Cinemato</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<head>
+    <script src="https://kit.fontawesome.com/13c823234a.js"></script>
+</head>
+<style>
+body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+.w3-row-padding img {margin-bottom: 12px}
+</style>
+<body>
+
+<!-- Hidden Sidebar (reveals when clicked on menu icon)-->
+<nav class="w3-sidebar w3-black w3-animate-right w3-xxlarge" style="display:none;padding-top:150px;right:0;z-index:2" id="mySidebar">
+  <a href="javascript:void(0)" onclick="closeNav()" class=" w3-button w3-black w3-xxxlarge w3-display-topright" style="padding:0 12px;">
+    <i class="far fa-times-circle"></i>
+  </a>
+  <div class="w3-bar-block w3-center">
+    <a href="/" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()"><i class="fas fa-home"></i>  Home</a>
+    <a href="#" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()"><i class="fas fa-video"></i>  Movies</a>
+    <a href="#" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()"><i class="fas fa-tv"></i>  TV series</a>
+    {% if is_authenticated%}
+    <span onclick="document.getElementById('id01').style.display='block'" class="w3-bar-item w3-button w3-text-grey w3-hover-black"><i class="fas fa-ticket-alt"></i> My Tickets</span>
+    {% endif %}
+    {% if is_authenticated%}
+    <a href="/logout" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()"><i class="fas fa-sign-out-alt"></i>  Sign Out</a>
+    {% else %}
+    <a href="/sign_in" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()"><i class="fas fa-sign-in-alt"></i>  Sign In</a>
+    {% endif %}
+    <a href="#" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()"><i class="fas fa-info"></i>  About Us</a>
+  </div>
+</nav>
+
+<!-- Page Content -->
+<div class="w3-main w3-padding-large">
+
+  <!-- Menu icon to open sidebar -->
+  <span class="w3-button w3-top w3-white w3-xxlarge w3-text-grey w3-hover-text-black" style="width:auto;right:0;" onclick="openNav()"><i class="fa fa-bars"></i></span>
+
+  <!-- Header -->
+  <!-- <header class="w3-container w3-center" style="padding:128px 16px" id="home"> -->
+    <div class="w3-row">
+            <div class="w3-col" style="width:40%;"> 
+                  <img src="/{{ movie.image }}" class="w3-image w3-round">
+            </div>
+            <div class="w3-rest w3-margin-top"><h1 class="w3-jumbo w3-center"><b>{{ movie.title }}</b></h1>
+                <p class="w3-center">a movie by {{ movie.director }} </p>
+                <p class="w3-margin-left"><b>CAST</b> </p>
+                <hr class="w3-opacity">
+                <p class="w3-margin-left">{{ movie.cast}}</p>
+                <p class="w3-margin-left"><b>ABOUT</b> </p>
+                <hr class="w3-opacity">
+                <p class="w3-margin-left">{{ movie.description }}</p>
+            </div>
+    
+  <!-- </header> -->
+  <!-- modal -->
+  <div id="id01" class="w3-modal">
+        <div class="w3-modal-content w3-animate-top w3-card-4">
+          <header class="w3-container w3-blue-gray"> 
+            <span onclick="document.getElementById('id01').style.display='none'" 
+            class="w3-button w3-display-topright">&times;</span>
+            <h2><i class="fas fa-ticket-alt"></i> Tickets</h2>
+          </header>
+          <div class="w3-container">
+            {% if tickets %}
+            {% for t in tickets %}
+            <p>{{ t.showtime.movie }} in Cinema {{ t.showtime.cinema }} at {{ t.showtime.start }}-{{ t.showtime.end }} - {{ t.seats }} seats reserved</p>
+            {% endfor %}
+            {% else %}
+            <p>You Have No Tickets Yet..</p>
+  
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <!-- modal end -->
+
+    <!-- End photo grid -->
+    </div>
+  <!-- End Portfolio Section -->
+  </div>
+
+  <!-- About Section -->
+  <div class="w3-row">
+        <div class="w3-col w3-half">
+            <p class="w3-margin-left"><b>CATEGORIES</b> </p>
+    <hr class="w3-opacity">
+    <p class="w3-margin-left">
+        {% for cat in movie.categories.all %}
+        {{ cat.name}}     <br>
+        {% endfor %}
+
+    </p>
+        </div>
+    <div class="w3-col w3-half">
+    <p class="w3-margin-left"><b>RELEASE DATE</b> </p>
+    <hr class="w3-opacity">
+    <p class="w3-margin-left"> {{ movie.release_date}} </p>
+</div>
+        </div>
+
+
+        <div class="w3-row">
+                <div class="w3-col w3-half">
+                    <p class="w3-margin-left"><b>COUNTRY</b> </p>
+            <hr class="w3-opacity">
+            <p class="w3-margin-left">
+                {{ movie.country }}
+            </p>
+                </div>
+            <div class="w3-col w3-half">
+            <p class="w3-margin-left"><b>AGE RESTRICTION</b> </p>
+            <hr class="w3-opacity">
+            <p class="w3-margin-left">
+                    {% if flag %}
+                    None 
+                    {% else %}
+                    {{ movie.age_restriction}}
+                    {% endif %}
+                </p>
+        </div>
+                </div>
+
+                <div class="w3-center">
+                    <a href="/reserve/{{ movie.id }}">
+    <button class="w3-button w3-blue-grey w3-padding-large w3-margin-bottom">
+            <i class="fas fa-ticket-alt"></i> buy ticket
+          </button>
+          </a>
+        </div>
+    <!-- End Grid/Pricing tables -->
+    
+  <!-- End About Section -->
+  </div>
+    
+    
+  
+  <!-- Footer -->
+  <footer class="w3-container w3-padding-64 w3-light-grey w3-center w3-opacity w3-xlarge w3-margin-top" style="margin:-24px">
+    <i class="fab fa-facebook w3-hover-opacity"></i>
+    <i class="fab fa-instagram w3-hover-opacity"></i>
+    <i class="fab fa-twitter w3-hover-opacity"></i>
+    <p class="w3-medium">Powered by <a href="#" target="_blank" class="w3-hover-text-green">Hashtag</a></p>
+  <!-- End footer -->
+  </footer>
+  
+<!-- END PAGE CONTENT -->
+</div>
+
+<script>
+// Open and close sidebar
+function openNav() {
+  document.getElementById("mySidebar").style.width = "30%";
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function closeNav() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+</body>
+</html>
